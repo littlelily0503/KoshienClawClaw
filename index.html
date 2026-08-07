@@ -43,8 +43,6 @@ h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0
 .today li{display:flex;gap:12px;align-items:baseline;font-size:15px;flex-wrap:wrap}
 .today .tm{color:var(--lamp);font-size:13px;min-width:5.5ch}
 .today .bx{font-size:11px;color:var(--dirt)}
-/* 確保今日賽程裡的文字跟比分絕對不會被壓縮 */
-.today li > span {  flex-shrink: 0;}
 
 /* ---- generic bracket node ---- */
 .brk{position:relative;margin:4px 0}
@@ -559,14 +557,14 @@ function renderToday(){
         const [t0,t1]=rowOrder(id);
         const x=team(d[t0]), y=team(d[t1]);
         const i0=t0==="a"?0:1;
-        const sc=d.s[0]!=null?`<span class="mono" style="color:var(--lamp)">${d.s[i0]}－${d.s[1-i0]}</span>`:"";
+        const sc=d.s[0]!=null?`<span class="sc2 mono" style="color:var(--lamp)">${d.s[i0]}－${d.s[1-i0]}</span>`:"";
         const st=LIVE(id)?`<span class="badge live">${d.status}</span>`:"";
         const href=d.gid?BOX_BASE+d.gid+BOX_PATH:BOX_FALLBACK;
-        return `<li><span class="tm mono">${d.t}</span>
-          <span class="mono" style="color:var(--dim);font-size:12px">${label(id)}</span>
-          <span>${x?x.n:slotLabel(d[t0])} － ${y?y.n:slotLabel(d[t1])}</span>
-          <span style="display:inline-flex; align-items:center; gap:8px; flex-shrink:0;">${sc}${st}</span>
-          <a class="mono" style="font-size:11px;color:var(--dirt)" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
+        return `<li><span class="tm mono">${d.t}</span>`
+          + `<span class="rd mono" style="color:var(--dim);font-size:12px">${label(id)}</span>`
+          + `<span class="mu">${x?x.n:slotLabel(d[t0])} － ${y?y.n:slotLabel(d[t1])}</span>`
+          + sc + st
+          + `<a class="bx mono" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
       }).join("")+"</ul>";
     document.querySelectorAll(`#sched tr[data-dt="${key}"]`).forEach(tr=>tr.classList.add("now"));
   } else if(REST.includes(key)){
