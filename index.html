@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 夏之甲子園 賽程籤表</title>
+<meta name="description" content="第108回全国高等学校野球選手権大会 賽程、籤表與每日賽果">
+<style>
+:root{
+  --board:#0A2A21; --board2:#0F3A2E; --slat:#134334;
+  --chalk:#EFEAD9; --dim:#8AAB9C; --line:#22604C;
+  --dirt:#B4713C; --lamp:#E8B84B; --win:#FFFFFF; --live:#E05B4B;
+  --W:196px; --H:80px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--board);color:var(--chalk);
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.5}
+.mono{font-family:ui-monospace,"SFMono-Regular","Roboto Mono","Courier New",monospace}
+.wrap{max-width:1520px;margin:0 auto;padding:0 24px 80px}
+a{color:inherit}
+
+header{padding:40px 24px 30px;border-bottom:2px solid var(--line);
+  background:radial-gradient(circle at 1px 1px, rgba(232,184,75,.16) 1px, transparent 1.6px) 0 0/7px 7px,
+             linear-gradient(180deg,#08221B,#0A2A21)}
+.head-inner{max-width:1520px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.34em;color:var(--lamp);margin:0 0 12px}
+h1{margin:0;font-size:clamp(24px,4vw,40px);font-weight:800;letter-spacing:.04em;line-height:1.18}
+h1 .sub{display:block;font-size:.46em;font-weight:600;letter-spacing:.16em;color:var(--dim);margin-top:10px}
+.meta{margin-top:22px;display:flex;flex-wrap:wrap;border-top:1px solid var(--line)}
+.meta div{flex:1 1 140px;padding:13px 16px 11px;border-right:1px solid var(--line)}
+.meta div:last-child{border-right:0}
+.meta dt{font-size:10px;letter-spacing:.22em;color:var(--dim);margin:0 0 5px}
+.meta dd{margin:0;font-size:15px;font-weight:700}
+
+section{margin-top:52px}
+h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0 0 6px}
+.lede{margin:0 0 22px;color:var(--dim);font-size:14px;max-width:78ch}
+
+/* today */
+.today{border:1px solid var(--dirt);background:rgba(180,113,60,.09);padding:16px 18px}
+.today h3{margin:0 0 12px;font-size:12px;letter-spacing:.2em;color:var(--dirt)}
+.today ul{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.today li{display:flex;gap:12px;align-items:baseline;font-size:15px;flex-wrap:wrap}
+.today .tm{color:var(--lamp);font-size:13px;min-width:5.5ch}
+
+/* ---- generic bracket node ---- */
+.brk{position:relative;margin:4px 0}
+.brk svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.node{position:absolute;width:var(--W);height:var(--H);
+  border:1px solid var(--line);background:var(--board2);
+  display:flex;flex-direction:column}
+.node.cur{border-color:var(--lamp)}
+.node.live{border-color:var(--live);background:#2A1E18}
+.node.live .nhead{background:rgba(224,91,75,.16)}
+.badge.live{flex:none;font-size:9px;font-weight:700;padding:1px 4px;border-radius:2px;
+  white-space:nowrap;background:var(--live);color:#fff;display:inline-flex;align-items:center;gap:3px}
+.nhead .badge.live{margin-left:auto}
+.badge.live::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.nhead .badge.live{margin-left:auto}
+.badge.live::before{animation:none}}
+.ha{font-size:9px;color:var(--dim);border:1px solid var(--line);padding:0 3px;border-radius:2px;flex:none}
+.trow.w .ha{border-color:var(--lamp);color:var(--lamp)}
+.node.fin{border-color:var(--dirt);background:#2A1A12}
+.nhead{display:flex;align-items:center;gap:6px;padding:3px 8px;white-space:nowrap;overflow:hidden;
+  border-bottom:1px solid var(--line);background:rgba(0,0,0,.25);font-size:11px;color:var(--dim)}
+.nhead .rn{font-weight:700;letter-spacing:.06em;flex:none}
+.nhead a{flex:none}
+.nhead a{color:var(--lamp);text-decoration:none;border-bottom:1px dotted var(--lamp)}
+.nhead a:hover{color:#fff;border-bottom-color:#fff}
+.nbody{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 8px}
+.trow{display:flex;align-items:baseline;gap:6px;padding:3px 0}
+.trow+.trow{border-top:1px dotted rgba(138,171,156,.28)}
+.tn{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp{font-size:10px;color:var(--dim);white-space:nowrap}
+.sc{margin-left:auto;font-size:15px;font-weight:800;color:var(--dim)}
+.trow.w .tn{color:var(--win)} .trow.w .sc{color:var(--lamp)}
+.trow.l{opacity:.42}
+.pend{font-size:12px;color:var(--dim);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* blocks */
+.blocks{display:grid;grid-template-columns:repeat(auto-fill,minmax(700px,1fr));gap:22px}
+.block{border:1px solid var(--line);background:linear-gradient(180deg,var(--board2),var(--slat))}
+.block-head{display:flex;align-items:baseline;gap:10px;padding:11px 15px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.22)}
+.blk-no{font-size:22px;font-weight:800;color:var(--lamp);line-height:1;min-width:2ch;text-align:center}
+.blk-label{font-size:12px;letter-spacing:.14em;font-weight:700}
+.blk-when{margin-left:auto;font-size:12px;color:var(--dim)}
+.block-body{padding:14px;overflow-x:auto}
+.colhead{display:flex;gap:44px;margin-bottom:5px}
+.colhead span{width:var(--W);font-size:10px;letter-spacing:.2em;color:var(--dim);text-align:center}
+
+/* finals */
+.finals-wrap{border:1px solid var(--dirt);background:linear-gradient(180deg,#12332A,#0F3A2E);padding:18px 16px;overflow-x:auto}
+.finals-note{font-size:12px;color:var(--dirt);margin:0 0 14px;letter-spacing:.06em}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:10px;letter-spacing:.2em;color:var(--dim);font-weight:700;white-space:nowrap}
+td.t{white-space:nowrap}
+td.t a{color:var(--lamp);text-decoration:none;border-bottom:1px dotted var(--lamp)}
+td.d{white-space:nowrap;font-weight:700}
+tr.db td{border-top:2px solid var(--line)}
+tr.now td{background:rgba(232,184,75,.09)}
+tr.live td{background:rgba(224,91,75,.14)}
+.st{font-size:11px;color:var(--live);font-weight:700}
+.rnd{font-size:11px;color:var(--dim);white-space:nowrap}
+
+.notes{border-left:3px solid var(--dirt);padding-left:16px;font-size:14px}
+.notes p{margin:0 0 10px}
+.notes b{color:var(--lamp)}
+code{background:rgba(0,0,0,.3);padding:1px 5px;font-size:.88em}
+footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--dim)}
+@media(max-width:640px){.meta div{flex:1 1 50%}.blocks{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <p class="eyebrow mono">KOSHIEN 2026</p>
+    <h1>第108回 全國高等學校野球選手權大會
+      <span class="sub">夏之甲子園 ｜ 賽程・籤表・賽果</span></h1>
+    <dl class="meta">
+      <div><dt class="mono">會期</dt><dd>8/5 － 8/22</dd></div>
+      <div><dt class="mono">球場</dt><dd>阪神甲子園球場</dd></div>
+      <div><dt class="mono">參賽</dt><dd>49 校</dd></div>
+      <div><dt class="mono">賽制</dt><dd>單淘汰・48 場</dd></div>
+      <div><dt class="mono">最後更新</dt><dd id="updated">－</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2 class="mono">TODAY</h2>
+  <div class="today" id="today"></div>
+</section>
+
+<section>
+  <h2 class="mono">FINAL EIGHT ／ 八強籤表</h2>
+  <p class="lede">八強配對於 8/16 全部 3回戰結束後，由勝隊主將現場抽籤決定；四強配對於 8/18 八強賽後再抽一次。抽籤前為 8 個空位。</p>
+  <div class="finals-wrap">
+    <p class="finals-note mono" id="fnote"></p>
+    <div class="brk" id="finals"></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="mono">BLOCKS ／ 分區籤表</h2>
+  <p class="lede">籤表固定到 3回戰為止，3回戰的 8 場即為 8 個獨立分區。各分區深度不一：分區 1－3 四隊全部輪空、直接從 2回戰開打；分區 4 為不對稱（花咲徳栄一側多一場 1回戰）；分區 5－8 為完整三層。所有分區的 3回戰欄一律靠右對齊。點日期可跳轉該場 box score。隊伍依國際慣例排列，客隊（先攻）在上、主隊（後攻）在下，標記為 <span class="ha">先</span> <span class="ha">後</span>；先攻後攻由兩隊主將賽前猜拳決定，開打前維持籤表順序。</p>
+  <div class="blocks" id="blocks"></div>
+</section>
+
+<section>
+  <h2 class="mono">SCHEDULE ／ 完整賽程</h2>
+  <p class="lede">第3日至第8日採上午之部／下午之部觀眾換場制；第9日起 13:30 開打。休養日設於 3回戰第2日、八強、四強的各隔天。</p>
+  <table><thead><tr><th>大會日</th><th>日期</th><th>開始</th><th>輪次</th><th>對戰</th><th>比分</th></tr></thead>
+  <tbody id="sched"></tbody></table>
+</section>
+
+<section>
+  <h2 class="mono">NOTES</h2>
+  <div class="notes">
+    <p><b>籤表結構。</b>49 校：17 場 1回戰（34 校出賽），另 15 校直接從 2回戰開打。其中 14 校在 2回戰互相對上，只有花咲徳栄的對手是 1回戰① 勝者。故 2回戰 16 場、3回戰 8 場，全大會 48 場。</p>
+    <p><b>本屆變更。</b>夏之選手權首次導入 DH 制；本屆起導入錄影輔助判決（ビデオ検証）；抽籤會首次改為線上舉行；第1日僅排 1 場。</p>
+    <p><b>初出場 4 校。</b>東日大昌平（福島）、八王子実践（西東京）、福山（廣島）、有明（熊本）。選手宣誓由八王子実践矢澤陵磨主將擔任。</p>
+    <p><b>怎麼更新。</b>改本檔 <code>&lt;script&gt;</code> 最上方的 <code>DATA</code>：<code>s:[6,3]</code> 填比分，勝隊自動晉級；<code>gid:"2021048480"</code> 填 スポーツナビ 場次編號，日期就變成 box score 連結。八強抽完填 <code>DRAW.qf1={a:"r3-1",b:"r3-5"}</code>，四強抽完填 <code>DRAW.sf1</code>。</p>
+  </div>
+</section>
+
+<footer>
+  籤表資料：日本高等学校野球連盟（2026/8/1 組合抽選）。box score 連結導向 スポーツナビ「バーチャル高校野球」。本頁為個人整理，非官方發布。
+</footer>
+
+</div>
+
+<!-- 賽果資料。載入失敗（檔案不存在）不影響頁面，會退回內建籤表。 -->
+<script src="results.js" onerror="console.info('無 results.js，改用 fetch 或內建資料')"></script>
+
+<script>
+/* ==========================================================
+   每天只要動這一段
+   s   : [先攻分, 後攻分]，未賽留 null
+   gid : スポーツナビ 場次編號（點日期跳 box score）
+   nt  : 備註，選填
+   ========================================================== */
+let UPDATED = "2026/08/07";
+const BOX_BASE = "https://baseball.yahoo.co.jp/hsb_summer/game/";
+const BOX_PATH = "/index";     // 想改成逐局得分頁就換成 "/score"
+const BOX_FALLBACK = "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition";
+
+const T = (n,p) => ({n,p});
+
+const DATA = {
+"r1-1" :{r:1,d:"第1日", dt:"8/5", t:"17:30", a:T("札幌日大","南北海道"), b:T("仙台育英","宮城"), s:[null,null], nt:"開幕戰"},
+"r1-2" :{r:1,d:"第2日", dt:"8/6", t:"16:00", a:T("東筑","福岡"), b:T("神村学園","鹿兒島"), s:[null,null]},
+"r1-3" :{r:1,d:"第2日", dt:"8/6", t:"18:30", a:T("聖隷クリストファー","靜岡"), b:T("佐野日大","栃木"), s:[null,null]},
+"r1-4" :{r:1,d:"第3日", dt:"8/7", t:"08:00", a:T("東海大甲府","山梨"), b:T("鶴岡東","山形"), s:[null,null]},
+"r1-5" :{r:1,d:"第3日", dt:"8/7", t:"13:30", a:T("八幡商","滋賀"), b:T("健大高崎","群馬"), s:[null,null]},
+"r1-6" :{r:1,d:"第3日", dt:"8/7", t:"16:00", a:T("立命館宇治","京都"), b:T("有明","熊本"), s:[null,null]},
+"r1-7" :{r:1,d:"第3日", dt:"8/7", t:"18:30", a:T("立正大淞南","島根"), b:T("長崎日大","長崎"), s:[null,null]},
+"r1-8" :{r:1,d:"第4日", dt:"8/8", t:"08:00", a:T("遊学館","石川"), b:T("青森山田","青森"), s:[null,null]},
+"r1-9" :{r:1,d:"第4日", dt:"8/8", t:"13:30", a:T("白樺学園","北北海道"), b:T("東日大昌平","福島"), s:[null,null]},
+"r1-10":{r:1,d:"第4日", dt:"8/8", t:"16:00", a:T("日本文理","新潟"), b:T("大分商","大分"), s:[null,null]},
+"r1-11":{r:1,d:"第4日", dt:"8/8", t:"18:30", a:T("英明","香川"), b:T("関東第一","東東京"), s:[null,null]},
+"r1-12":{r:1,d:"第5日", dt:"8/9", t:"08:00", a:T("新田","愛媛"), b:T("花巻東","岩手"), s:[null,null]},
+"r1-13":{r:1,d:"第5日", dt:"8/9", t:"13:30", a:T("岡山学芸館","岡山"), b:T("鳥取城北","鳥取"), s:[null,null]},
+"r1-14":{r:1,d:"第5日", dt:"8/9", t:"16:00", a:T("鳴門渦潮","德島"), b:T("八王子実践","西東京"), s:[null,null]},
+"r1-15":{r:1,d:"第5日", dt:"8/9", t:"18:30", a:T("中京","岐阜"), b:T("霞ケ浦","茨城"), s:[null,null]},
+"r1-16":{r:1,d:"第6日", dt:"8/10",t:"08:00", a:T("明徳義塾","高知"), b:T("日南学園","宮崎"), s:[null,null]},
+"r1-17":{r:1,d:"第6日", dt:"8/10",t:"13:30", a:T("横浜","神奈川"), b:T("沖縄尚学","沖繩"), s:[null,null], nt:"去年春夏冠軍對決"},
+
+"r2-1" :{r:2,d:"第6日", dt:"8/10",t:"16:00", a:T("高岡商","富山"), b:T("高川学園","山口"), s:[null,null]},
+"r2-2" :{r:2,d:"第6日", dt:"8/10",t:"18:30", a:T("天理","奈良"), b:T("福山","廣島"), s:[null,null]},
+"r2-3" :{r:2,d:"第7日", dt:"8/11",t:"08:00", a:T("横手","秋田"), b:T("敦賀気比","福井"), s:[null,null]},
+"r2-4" :{r:2,d:"第7日", dt:"8/11",t:"13:30", a:T("智辯和歌山","和歌山"), b:T("社","兵庫"), s:[null,null]},
+"r2-5" :{r:2,d:"第7日", dt:"8/11",t:"16:00", a:T("履正社","大阪"), b:T("享栄","愛知"), s:[null,null]},
+"r2-6" :{r:2,d:"第7日", dt:"8/11",t:"18:30", a:T("松商学園","長野"), b:T("三重","三重"), s:[null,null]},
+"r2-7" :{r:2,d:"第8日", dt:"8/12",t:"08:00", a:T("拓大紅陵","千葉"), b:T("佐賀商","佐賀"), s:[null,null]},
+"r2-8" :{r:2,d:"第8日", dt:"8/12",t:"13:30", a:T("花咲徳栄","埼玉"), b:{f:"r1-1"}, s:[null,null]},
+"r2-9" :{r:2,d:"第8日", dt:"8/12",t:"16:00", a:{f:"r1-2"}, b:{f:"r1-3"}, s:[null,null]},
+"r2-10":{r:2,d:"第8日", dt:"8/12",t:"18:30", a:{f:"r1-4"}, b:{f:"r1-5"}, s:[null,null]},
+"r2-11":{r:2,d:"第9日", dt:"8/13",t:"13:30", a:{f:"r1-6"}, b:{f:"r1-7"}, s:[null,null]},
+"r2-12":{r:2,d:"第9日", dt:"8/13",t:"16:00", a:{f:"r1-8"}, b:{f:"r1-9"}, s:[null,null]},
+"r2-13":{r:2,d:"第9日", dt:"8/13",t:"18:30", a:{f:"r1-10"},b:{f:"r1-11"},s:[null,null]},
+"r2-14":{r:2,d:"第10日",dt:"8/14",t:"13:30", a:{f:"r1-12"},b:{f:"r1-13"},s:[null,null]},
+"r2-15":{r:2,d:"第10日",dt:"8/14",t:"16:00", a:{f:"r1-14"},b:{f:"r1-15"},s:[null,null]},
+"r2-16":{r:2,d:"第10日",dt:"8/14",t:"18:30", a:{f:"r1-16"},b:{f:"r1-17"},s:[null,null]},
+
+"r3-1" :{r:3,d:"第11日",dt:"8/15",t:"08:00", a:{f:"r2-1"}, b:{f:"r2-2"}, s:[null,null]},
+"r3-2" :{r:3,d:"第11日",dt:"8/15",t:"10:30", a:{f:"r2-3"}, b:{f:"r2-4"}, s:[null,null]},
+"r3-3" :{r:3,d:"第11日",dt:"8/15",t:"13:00", a:{f:"r2-5"}, b:{f:"r2-6"}, s:[null,null]},
+"r3-4" :{r:3,d:"第11日",dt:"8/15",t:"15:30", a:{f:"r2-7"}, b:{f:"r2-8"}, s:[null,null]},
+"r3-5" :{r:3,d:"第12日",dt:"8/16",t:"08:00", a:{f:"r2-9"}, b:{f:"r2-10"},s:[null,null]},
+"r3-6" :{r:3,d:"第12日",dt:"8/16",t:"10:30", a:{f:"r2-11"},b:{f:"r2-12"},s:[null,null]},
+"r3-7" :{r:3,d:"第12日",dt:"8/16",t:"13:00", a:{f:"r2-13"},b:{f:"r2-14"},s:[null,null]},
+"r3-8" :{r:3,d:"第12日",dt:"8/16",t:"15:30", a:{f:"r2-15"},b:{f:"r2-16"},s:[null,null]},
+
+"qf1"  :{r:4,d:"第13日",dt:"8/18",t:"08:00", s:[null,null]},
+"qf2"  :{r:4,d:"第13日",dt:"8/18",t:"10:30", s:[null,null]},
+"qf3"  :{r:4,d:"第13日",dt:"8/18",t:"13:00", s:[null,null]},
+"qf4"  :{r:4,d:"第13日",dt:"8/18",t:"15:30", s:[null,null]},
+"sf1"  :{r:5,d:"第14日",dt:"8/20",t:"08:00", s:[null,null]},
+"sf2"  :{r:5,d:"第14日",dt:"8/20",t:"10:30", s:[null,null]},
+"f"    :{r:6,d:"第15日",dt:"8/22",t:"10:00", a:{f:"sf1"}, b:{f:"sf2"}, s:[null,null]}
+};
+
+/* 抽籤結果。8/16 三回戰全部結束後填 qf，8/18 八強結束後填 sf。
+   例：qf1:{a:"r3-1", b:"r3-5"}   sf1:{a:"qf1", b:"qf3"}          */
+const DRAW = {
+  qf1:null, qf2:null, qf3:null, qf4:null,
+  sf1:null, sf2:null
+};
+
+const REST = ["8/17","8/19","8/21"];
+
+/* ================= 以下不需修改 ================= */
+
+for(const k in DRAW){ if(DRAW[k]){ DATA[k].a={f:DRAW[k].a}; DATA[k].b={f:DRAW[k].b}; } }
+// 四強來源：未抽籤時採用預設骨架，抽籤後依 DRAW 重新排位，避免連線交叉
+const sfSrc = { sf1: DRAW.sf1 || {a:"qf1",b:"qf2"}, sf2: DRAW.sf2 || {a:"qf3",b:"qf4"} };
+DATA.sf1.a={f:sfSrc.sf1.a}; DATA.sf1.b={f:sfSrc.sf1.b};
+DATA.sf2.a={f:sfSrc.sf2.a}; DATA.sf2.b={f:sfSrc.sf2.b};
+
+const RN = {1:"1回戰",2:"2回戰",3:"3回戰",4:"八強賽",5:"四強賽",6:"決賽"};
+const IDS = Object.keys(DATA);
+// スポーツナビ 場次編號為連號，且 DATA 依出賽順序定義
+const GID0 = 2021048480;
+IDS.forEach((k,i)=>{ if(!DATA[k].gid) DATA[k].gid = String(GID0+i); });
+const num = id => { const m=id.match(/(\d+)$/); return m?+m[1]:null; };
+const label = id => {
+  const d=DATA[id];
+  if(id==="f") return "決賽";
+  if(d.r>=4) return RN[d.r]+" 第"+num(id)+"試合";
+  return RN[d.r]+" 第"+num(id)+"試合";
+};
+const FIN  = id => !DATA[id].status || /試合終了/.test(DATA[id].status);
+const LIVE = id => /\d+回(表|裏)/.test(DATA[id].status||"");
+// 進行中的比分不算數，否則 1-0 領先會被誤判為晉級
+const decided = id => {
+  const s=DATA[id].s;
+  return FIN(id) && s[0]!=null && s[1]!=null && s[0]!==s[1];
+};
+function team(slot){
+  if(!slot) return null;
+  if(slot.n) return slot;
+  if(slot.f) return winner(slot.f);
+  return null;
+}
+function winner(id){
+  if(!decided(id)) return null;
+  const d=DATA[id];
+  return team(d.s[0]>d.s[1] ? d.a : d.b);
+}
+function slotLabel(slot){
+  if(!slot) return "抽籤後決定";
+  if(slot.n) return slot.n;
+  if(slot.f) return label(slot.f)+" 勝者";
+  return "－";
+}
+function boxLink(id){
+  const d=DATA[id];
+  const href = d.gid ? BOX_BASE+d.gid+BOX_PATH : BOX_FALLBACK;
+  return `<a class="mono" href="${href}" target="_blank" rel="noopener">${d.dt} ${d.t}</a>`;
+}
+
+/* ---------- 節點 ---------- */
+function todayKeyJST(){
+  const n=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));
+  return (n.getMonth()+1)+"/"+n.getDate();
+}
+const TODAY = todayKeyJST();
+
+// 國際慣例：客隊（先攻）在上，主隊（後攻）在下。
+// 先攻後攻由兩隊主將賽前猜拳決定，開打前無從得知，此時維持籤表順序。
+function rowOrder(id){
+  const h=DATA[id].home;
+  if(h==="a") return ["b","a"];
+  if(h==="b") return ["a","b"];
+  return ["a","b"];
+}
+
+function nodeHTML(id, extra=""){
+  const d=DATA[id], done=decided(id), live=LIVE(id);
+  const [top,bot] = rowOrder(id);
+  const hs = d.home;
+
+  const row = (side,isHome)=>{
+    const tm=team(d[side]), i=side==="a"?0:1, o=1-i;
+    const cls = done ? (d.s[i]>d.s[o]?"w":"l") : "";
+    const sc  = d.s[i]!=null ? d.s[i] : "－";
+    const ha  = hs ? `<span class="ha">${isHome?"後":"先"}</span>` : "";
+    return tm
+      ? `<div class="trow ${cls}"><span class="tn">${tm.n}</span><span class="tp">${tm.p}</span>${ha}<span class="sc mono">${sc}</span></div>`
+      : `<div class="trow"><span class="pend">${slotLabel(d[side])}</span><span class="sc mono">${sc}</span></div>`;
+  };
+
+  const badge = live ? `<span class="badge live">${d.status}</span>` : "";
+  const cls = [extra, live?"live":""].filter(Boolean).join(" ");
+  return `<div class="node ${cls}">
+    <div class="nhead"><span class="rn">${label(id)}</span>${boxLink(id)}${badge}</div>
+    <div class="nbody">${row(top, top===hs)}${row(bot, bot===hs)}</div>
+  </div>`;
+}
+
+/* ---------- 分區樹狀圖 ---------- */
+const W=196, H=80, HG=44, VG=14;
+
+function buildTree(id){
+  const d=DATA[id], kids=[];
+  for(const side of ["a","b"]) if(d[side]&&d[side].f) kids.push(buildTree(d[side].f));
+  return {id, col:d.r-1, kids};
+}
+function layout(root){
+  let row=0; const pos={};
+  (function walk(n){
+    if(!n.kids.length){ pos[n.id]=row*(H+VG); row++; return pos[n.id]; }
+    const ys=n.kids.map(walk);
+    pos[n.id]=(Math.min(...ys)+Math.max(...ys))/2;
+    return pos[n.id];
+  })(root);
+  return {pos, rows:row};
+}
+function renderBlock(i){
+  const rootId="r3-"+i, root=buildTree(rootId), {pos,rows}=layout(root);
+  const w=3*W+2*HG, h=rows*(H+VG)-VG;
+  const nodes=[], paths=[];
+  (function walk(n){
+    const x=n.col*(W+HG), y=pos[n.id];
+    nodes.push(`<div style="left:${x}px;top:${y}px;position:absolute">${nodeHTML(n.id)}</div>`);
+    n.kids.forEach(k=>{
+      const kx=k.col*(W+HG), ky=pos[k.id];
+      const mx=kx+W+HG/2;
+      paths.push(`M ${kx+W} ${ky+H/2} H ${mx} V ${y+H/2} H ${x}`);
+      walk(k);
+    });
+  })(root);
+  const svg=`<svg width="${w}" height="${h}">${paths.map(p=>
+    `<path d="${p}" fill="none" stroke="#22604C" stroke-width="1.5"/>`).join("")}</svg>`;
+  const d3=DATA[rootId];
+  return `<div class="block">
+    <div class="block-head"><span class="blk-no mono">${i}</span>
+      <span class="blk-label">分區 ${i}　／　3回戰 第${i}試合</span>
+      <span class="blk-when mono">${d3.dt} ${d3.t}</span></div>
+    <div class="block-body">
+      <div class="colhead"><span>1回戰</span><span>2回戰</span><span>3回戰</span></div>
+      <div class="brk" style="width:${w}px;height:${h}px">${svg}${nodes.join("")}</div>
+    </div></div>`;
+}
+function renderBlocks(){ document.getElementById("blocks").innerHTML =
+  [1,2,3,4,5,6,7,8].map(renderBlock).join(""); }
+
+/* ---------- 八強籤表（左右向中間匯聚） ---------- */
+function renderFinals(){
+  const QW=196, QH=80, CG=44;
+  const cx=[0,1,2,3,4].map(i=>i*(QW+CG));
+  const w=cx[4]+QW;
+  const yTop=0, yBot=210, yMid=(yTop+yBot)/2;
+  const h=yBot+QH;
+
+  const L=[sfSrc.sf1.a, sfSrc.sf1.b], R=[sfSrc.sf2.a, sfSrc.sf2.b];
+  const place=[];
+  const put=(id,x,y,extra="")=>place.push(
+    `<div style="left:${x}px;top:${y}px;position:absolute">${nodeHTML(id,extra)}</div>`);
+
+  put(L[0], cx[0], yTop);  put(L[1], cx[0], yBot);
+  put("sf1", cx[1], yMid);
+  put("f",   cx[2], yMid, "fin");
+  put("sf2", cx[3], yMid);
+  put(R[0], cx[4], yTop);  put(R[1], cx[4], yBot);
+
+  const p=[];
+  // 左：八強 → 四強
+  [yTop,yBot].forEach(y=>{
+    const mx=cx[0]+QW+CG/2;
+    p.push(`M ${cx[0]+QW} ${y+QH/2} H ${mx} V ${yMid+QH/2} H ${cx[1]}`);
+  });
+  // 右：八強 → 四強（鏡像）
+  [yTop,yBot].forEach(y=>{
+    const mx=cx[4]-CG/2;
+    p.push(`M ${cx[4]} ${y+QH/2} H ${mx} V ${yMid+QH/2} H ${cx[3]+QW}`);
+  });
+  // 四強 → 決賽
+  p.push(`M ${cx[1]+QW} ${yMid+QH/2} H ${cx[2]}`);
+  p.push(`M ${cx[3]} ${yMid+QH/2} H ${cx[2]+QW}`);
+
+  const svg=`<svg width="${w}" height="${h}">${p.map(d=>
+    `<path d="${d}" fill="none" stroke="#B4713C" stroke-width="1.5"/>`).join("")}</svg>`;
+  const el=document.getElementById("finals");
+  el.style.width=w+"px"; el.style.height=h+"px";
+  el.innerHTML=svg+place.join("");
+  document.getElementById("fnote").textContent =
+    DRAW.qf1 ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）";
+}
+
+/* ---------- 完整賽程 ---------- */
+function renderSchedule(){
+  const cmp=(x,y)=>{const p=s=>s.split("/").map(Number);const[a1,a2]=p(x),[b1,b2]=p(y);return a1-b1||a2-b2;};
+  const rows=[]; let last=null;
+  IDS.forEach(id=>{
+    const d=DATA[id], isNew=d.dt!==last;
+    if(isNew&&last) REST.filter(r=>cmp(r,last)>0&&cmp(r,d.dt)<0).forEach(r=>
+      rows.push(`<tr class="db"><td class="d">－</td><td class="d">${r}</td><td class="t mono">－</td><td class="rnd">休養日</td><td>－</td><td></td></tr>`));
+    const [t0,t1]=rowOrder(id);
+    const x=team(d[t0]), y=team(d[t1]);
+    const card=(x?`${x.n}（${x.p}）`:slotLabel(d[t0]))+" － "+(y?`${y.n}（${y.p}）`:slotLabel(d[t1]));
+    const i0=t0==="a"?0:1;
+    const sc=d.s[0]!=null?`${d.s[i0]} － ${d.s[1-i0]}`:"";
+    const stat=LIVE(id)?` <span class="st">${d.status}</span>`:"";
+    rows.push(`<tr class="${[isNew?"db":"",LIVE(id)?"live":""].filter(Boolean).join(" ")}" data-dt="${d.dt}">
+      <td class="d">${isNew?d.d:""}</td><td class="d">${isNew?d.dt:""}</td>
+      <td class="t">${boxLink(id).replace(d.dt+" ","")}</td>
+      <td class="rnd">${label(id)}</td>
+      <td>${card}${stat}${d.nt?` <span style="color:var(--dirt);font-size:11px">${d.nt}</span>`:""}</td>
+      <td class="mono">${sc}</td></tr>`);
+    last=d.dt;
+  });
+  document.getElementById("sched").innerHTML=rows.join("");
+}
+
+/* ---------- Today ---------- */
+function renderToday(){
+  const key=TODAY;
+  const list=IDS.filter(id=>DATA[id].dt===key);
+  const box=document.getElementById("today");
+  if(list.length){
+    box.innerHTML=`<h3 class="mono">${DATA[list[0]].d}　${key}（日本時間）</h3><ul>`+
+      list.map(id=>{
+        const d=DATA[id];
+        const [t0,t1]=rowOrder(id);
+        const x=team(d[t0]), y=team(d[t1]);
+        const i0=t0==="a"?0:1;
+        const sc=d.s[0]!=null?` <span class="mono" style="color:var(--lamp)">${d.s[i0]}－${d.s[1-i0]}</span>`:"";
+        const st=LIVE(id)?` <span class="badge live">${d.status}</span>`:"";
+        const href=d.gid?BOX_BASE+d.gid+BOX_PATH:BOX_FALLBACK;
+        return `<li><span class="tm mono">${d.t}</span>
+          <span class="mono" style="color:var(--dim);font-size:12px">${label(id)}</span>
+          <span>${x?x.n:slotLabel(d[t0])} － ${y?y.n:slotLabel(d[t1])}</span>${sc}${st}
+          <a class="mono" style="font-size:11px;color:var(--dirt)" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
+      }).join("")+"</ul>";
+    document.querySelectorAll(`#sched tr[data-dt="${key}"]`).forEach(tr=>tr.classList.add("now"));
+  } else if(REST.includes(key)){
+    box.innerHTML=`<h3 class="mono">${key}（日本時間）</h3><p style="margin:0">休養日，無賽事。</p>`;
+  } else {
+    box.innerHTML=`<h3 class="mono">${key}（日本時間）</h3><p style="margin:0">今日非大會期間。</p>`;
+  }
+}
+
+/* ---------- results.json ---------- */
+const NORM = s => String(s)
+  .replace(/[辯辨]/g,"弁").replace(/[ケヶ]/g,"ケ")
+  .replace(/[ 　]/g,"").trim();
+
+function applyResults(res){
+  if(!res || !res.games) return;
+  // 依出賽順序套用，確保晉級隊伍已解析完才對齊下一輪
+  IDS.forEach(id=>{
+    const g=res.games[id];
+    if(!g) return;
+    if(g.gid) DATA[id].gid=g.gid;
+    if(g.status) DATA[id].status=g.status;
+
+    const a=team(DATA[id].a), b=team(DATA[id].b);
+
+    // スポーツナビ 一律「後攻 － 先攻」排列，teams[0] 即主隊。
+    // 開打前不重排，故僅在有 status 且非「試合前／見どころ」時採信。
+    if(a && b && Array.isArray(g.teams) && (LIVE(id) || FIN(id) && g.score)){
+      const [g0,g1]=g.teams.map(NORM);
+      if(g0===NORM(a.n) && g1===NORM(b.n)) DATA[id].home="a";
+      else if(g0===NORM(b.n) && g1===NORM(a.n)) DATA[id].home="b";
+    }
+
+    if(!Array.isArray(g.score) || g.score[0]==null) return;
+    let sc=[g.score[0], g.score[1]];
+    if(a && b && Array.isArray(g.teams)){
+      const [g0,g1]=g.teams.map(NORM);
+      if(g0===NORM(b.n) && g1===NORM(a.n)) sc=[g.score[1], g.score[0]];
+      else if(g0!==NORM(a.n)) console.warn("校名對不上：",id,g.teams,[a.n,b.n]);
+    }
+    DATA[id].s=sc;
+  });
+  if(res.updated) UPDATED=res.updated;
+}
+
+function renderAll(){
+  renderBlocks(); renderFinals(); renderSchedule(); renderToday();
+  document.getElementById("updated").textContent=UPDATED;
+}
+
+(async function(){
+  let res = null;
+
+  // 1) results.js（<script> 載入，file:// 也可用）
+  if(window.KOSHIEN_RESULTS){ res = window.KOSHIEN_RESULTS; }
+
+  // 2) results.json（需 http server，但可繞過瀏覽器對 .js 的快取）
+  try{
+    const r = await fetch("results.json?t="+Date.now(), {cache:"no-store"});
+    if(r.ok) res = await r.json();
+  }catch(e){ /* file:// 下必然失敗，忽略 */ }
+
+  if(res) applyResults(res);
+  else console.info("無外部賽果資料，使用 index.html 內建籤表");
+
+  renderAll();
+
+  // 分頁開著時自動重抓。只在大會期間、且分頁可見時運作。
+  const REFRESH_MS = 5 * 60 * 1000;
+  setInterval(async ()=>{
+    if(document.hidden) return;
+    if(!IDS.some(id=>DATA[id].dt===TODAY)) return;   // 今天沒比賽就不打擾
+    try{
+      const r = await fetch("results.json?t="+Date.now(), {cache:"no-store"});
+      if(!r.ok) return;
+      applyResults(await r.json());
+      renderAll();
+    }catch(e){ /* file:// 或離線，忽略 */ }
+  }, REFRESH_MS);
+})();
+</script>
+</body>
+</html>
