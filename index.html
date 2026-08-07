@@ -43,6 +43,10 @@ h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0
 .today li{display:flex;gap:12px;align-items:baseline;font-size:15px;flex-wrap:wrap}
 .today .tm{color:var(--lamp);font-size:13px;min-width:5.5ch}
 .today .bx{font-size:11px;color:var(--dirt)}
+/* 確保今日賽程裡的文字跟比分絕對不會被壓縮 */
+.today li > span {
+  flex-shrink: 0;
+}
 
 /* ---- generic bracket node ---- */
 .brk{position:relative;margin:4px 0}
