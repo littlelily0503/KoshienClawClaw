@@ -34,8 +34,7 @@ h1 .sub{display:block;font-size:.46em;font-weight:600;letter-spacing:.16em;color
 .meta dd{margin:0;font-size:15px;font-weight:700}
 
 section{margin-top:52px}
-h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0 0 6px}
-.lede{margin:0 0 22px;color:var(--dim);font-size:14px;max-width:78ch}
+h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0 0 18px}
 
 /* today */
 .today{border:1px solid var(--dirt);background:rgba(180,113,60,.09);padding:16px 18px}
@@ -43,6 +42,7 @@ h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0
 .today ul{margin:0;padding:0;list-style:none;display:grid;gap:9px}
 .today li{display:flex;gap:12px;align-items:baseline;font-size:15px;flex-wrap:wrap}
 .today .tm{color:var(--lamp);font-size:13px;min-width:5.5ch}
+.today .bx{font-size:11px;color:var(--dirt)}
 
 /* ---- generic bracket node ---- */
 .brk{position:relative;margin:4px 0}
@@ -88,6 +88,37 @@ h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0
 .blk-when{margin-left:auto;font-size:12px;color:var(--dim)}
 .block-body{padding:14px;overflow-x:auto}
 .colhead{display:flex;gap:44px;margin-bottom:5px}
+/* 窄螢幕：不畫樹，改為依輪次縱向堆疊 */
+.stack{display:flex;flex-direction:column;gap:14px}
+.stack .rgroup{display:flex;flex-direction:column;gap:8px}
+.stack .rlabel{font-size:10px;letter-spacing:.2em;color:var(--dim);
+  border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:2px}
+.stack .node{position:static;width:100%;height:auto;min-height:var(--H)}
+.stack .rgroup.r3 .node{border-color:var(--lamp)}
+
+/* 窄螢幕：完整賽程改為卡片，與分區籤表同一套版型 */
+#schedNarrow{display:none}
+.sday{font-size:11px;letter-spacing:.2em;color:var(--lamp);font-weight:700;
+  border-bottom:1px solid var(--line);padding:14px 0 5px;margin-bottom:8px}
+.sday:first-child{padding-top:0}
+.sday .dow{color:var(--dim);font-weight:400;letter-spacing:0;margin-left:8px}
+.srest{font-size:13px;color:var(--dim);padding:4px 0 8px}
+#schedNarrow .node{position:static;width:100%;height:auto;min-height:var(--H);margin-bottom:8px}
+
+@media(max-width:759px){
+  table.sched{display:none}
+  #schedNarrow{display:block}
+  /* 今日：對戰移到左下，box 靠右上 */
+  .today li{display:grid;grid-template-columns:auto 1fr auto;
+    gap:2px 10px;align-items:baseline;padding:6px 0;
+    border-bottom:1px dotted rgba(138,171,156,.22)}
+  .today li:last-child{border-bottom:0}
+  .today li>.tm{grid-column:1;grid-row:1}
+  .today li>.rd{grid-column:2;grid-row:1}
+  .today li>.bx{grid-column:3;grid-row:1;justify-self:end}
+  .today li>.mu{grid-column:1/-1;grid-row:2;font-size:15px}
+  .today li>.sc2,.today li>.badge{grid-column:1/-1;grid-row:3;justify-self:start}
+}
 .colhead span{width:var(--W);font-size:10px;letter-spacing:.2em;color:var(--dim);text-align:center}
 
 /* finals */
@@ -140,7 +171,6 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-si
 
 <section>
   <h2 class="mono">FINAL EIGHT ／ 八強籤表</h2>
-  <p class="lede">八強配對於 8/16 全部 3回戰結束後，由勝隊主將現場抽籤決定；四強配對於 8/18 八強賽後再抽一次。抽籤前為 8 個空位。</p>
   <div class="finals-wrap">
     <p class="finals-note mono" id="fnote"></p>
     <div class="brk" id="finals"></div>
@@ -149,15 +179,14 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-si
 
 <section>
   <h2 class="mono">BLOCKS ／ 分區籤表</h2>
-  <p class="lede">籤表固定到 3回戰為止，3回戰的 8 場即為 8 個獨立分區。各分區深度不一：分區 1－3 四隊全部輪空、直接從 2回戰開打；分區 4 為不對稱（花咲徳栄一側多一場 1回戰）；分區 5－8 為完整三層。所有分區的 3回戰欄一律靠右對齊。點日期可跳轉該場 box score。隊伍依國際慣例排列，客隊（先攻）在上、主隊（後攻）在下，標記為 <span class="ha">先</span> <span class="ha">後</span>；先攻後攻由兩隊主將賽前猜拳決定，開打前維持籤表順序。</p>
   <div class="blocks" id="blocks"></div>
 </section>
 
 <section>
   <h2 class="mono">SCHEDULE ／ 完整賽程</h2>
-  <p class="lede">第3日至第8日採上午之部／下午之部觀眾換場制；第9日起 13:30 開打。休養日設於 3回戰第2日、八強、四強的各隔天。</p>
-  <table><thead><tr><th>大會日</th><th>日期</th><th>開始</th><th>輪次</th><th>對戰</th><th>比分</th></tr></thead>
+  <table class="sched"><thead><tr><th>大會日</th><th>日期</th><th>開始</th><th>輪次</th><th>對戰</th><th>比分</th></tr></thead>
   <tbody id="sched"></tbody></table>
+  <div id="schedNarrow"></div>
 </section>
 
 <section>
@@ -166,7 +195,6 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-si
     <p><b>籤表結構。</b>49 校：17 場 1回戰（34 校出賽），另 15 校直接從 2回戰開打。其中 14 校在 2回戰互相對上，只有花咲徳栄的對手是 1回戰① 勝者。故 2回戰 16 場、3回戰 8 場，全大會 48 場。</p>
     <p><b>本屆變更。</b>夏之選手權首次導入 DH 制；本屆起導入錄影輔助判決（ビデオ検証）；抽籤會首次改為線上舉行；第1日僅排 1 場。</p>
     <p><b>初出場 4 校。</b>東日大昌平（福島）、八王子実践（西東京）、福山（廣島）、有明（熊本）。選手宣誓由八王子実践矢澤陵磨主將擔任。</p>
-    <p><b>怎麼更新。</b>改本檔 <code>&lt;script&gt;</code> 最上方的 <code>DATA</code>：<code>s:[6,3]</code> 填比分，勝隊自動晉級；<code>gid:"2021048480"</code> 填 スポーツナビ 場次編號，日期就變成 box score 連結。八強抽完填 <code>DRAW.qf1={a:"r3-1",b:"r3-5"}</code>，四強抽完填 <code>DRAW.sf1</code>。</p>
   </div>
 </section>
 
@@ -347,6 +375,8 @@ function nodeHTML(id, extra=""){
 
 /* ---------- 分區樹狀圖 ---------- */
 const W=196, H=80, HG=44, VG=14;
+const NARROW_AT = 760;
+const isNarrow = () => window.innerWidth < NARROW_AT;
 
 function buildTree(id){
   const d=DATA[id], kids=[];
@@ -363,7 +393,27 @@ function layout(root){
   })(root);
   return {pos, rows:row};
 }
+function stackBlock(i){
+  const rootId="r3-"+i, root=buildTree(rootId);
+  const byCol={};
+  (function walk(n){ (byCol[n.col]=byCol[n.col]||[]).push(n.id); n.kids.forEach(walk); })(root);
+  const names={0:"1回戰",1:"2回戰",2:"3回戰"};
+  const groups=Object.keys(byCol).map(Number).sort((a,b)=>a-b).map(c=>
+    `<div class="rgroup ${c===2?"r3":""}">
+       <div class="rlabel">${names[c]}</div>
+       ${byCol[c].slice().reverse().map(id=>nodeHTML(id)).join("")}
+     </div>`).join("");
+  const d3=DATA[rootId];
+  return `<div class="block">
+    <div class="block-head"><span class="blk-no mono">${i}</span>
+      <span class="blk-label">分區 ${i}　／　3回戰 第${i}試合</span>
+      <span class="blk-when mono">${d3.dt} ${d3.t}</span></div>
+    <div class="block-body"><div class="stack">${groups}</div></div>
+  </div>`;
+}
+
 function renderBlock(i){
+  if(isNarrow()) return stackBlock(i);
   const rootId="r3-"+i, root=buildTree(rootId), {pos,rows}=layout(root);
   const w=3*W+2*HG, h=rows*(H+VG)-VG;
   const nodes=[], paths=[];
@@ -394,6 +444,21 @@ function renderBlocks(){ document.getElementById("blocks").innerHTML =
 
 /* ---------- 八強籤表（左右向中間匯聚） ---------- */
 function renderFinals(){
+  const el0=document.getElementById("finals");
+  if(isNarrow()){
+    const L=[sfSrc.sf1.a, sfSrc.sf1.b], R=[sfSrc.sf2.a, sfSrc.sf2.b];
+    const grp=(lbl,ids)=>`<div class="rgroup"><div class="rlabel">${lbl}</div>${ids.map(id=>nodeHTML(id)).join("")}</div>`;
+    const QF=[...L, ...R];
+    // 八強全部打完後只剩三場，把最重要的擺最上面
+    const g = QF.every(decided)
+      ? [grp("決賽",["f"]), grp("四強賽",["sf1","sf2"]), grp("八強賽", QF)]
+      : [grp("八強賽", QF), grp("四強賽",["sf1","sf2"]), grp("決賽",["f"])];
+    el0.style.width=""; el0.style.height="";
+    el0.innerHTML=`<div class="stack">${g.join("")}</div>`;
+    document.getElementById("fnote").textContent =
+      DRAW.qf1 ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）";
+    return;
+  }
   const QW=196, QH=80, CG=44;
   const cx=[0,1,2,3,4].map(i=>i*(QW+CG));
   const w=cx[4]+QW;
@@ -437,6 +502,7 @@ function renderFinals(){
 
 /* ---------- 完整賽程 ---------- */
 function renderSchedule(){
+  if(isNarrow()) return renderScheduleNarrow();
   const cmp=(x,y)=>{const p=s=>s.split("/").map(Number);const[a1,a2]=p(x),[b1,b2]=p(y);return a1-b1||a2-b2;};
   const rows=[]; let last=null;
   IDS.forEach(id=>{
@@ -460,6 +526,25 @@ function renderSchedule(){
   document.getElementById("sched").innerHTML=rows.join("");
 }
 
+function renderScheduleNarrow(){
+  const DOW={"8/5":"三","8/6":"四","8/7":"五","8/8":"六","8/9":"日","8/10":"一","8/11":"二",
+             "8/12":"三","8/13":"四","8/14":"五","8/15":"六","8/16":"日","8/17":"一",
+             "8/18":"二","8/19":"三","8/20":"四","8/21":"五","8/22":"六"};
+  const cmp=(x,y)=>{const p=z=>z.split("/").map(Number);const[a1,a2]=p(x),[b1,b2]=p(y);return a1-b1||a2-b2;};
+  const out=[]; let last=null;
+  IDS.forEach(id=>{
+    const d=DATA[id];
+    if(d.dt!==last){
+      if(last) REST.filter(r=>cmp(r,last)>0&&cmp(r,d.dt)<0).forEach(r=>
+        out.push(`<div class="sday">${r}<span class="dow">（${DOW[r]||""}）</span></div><div class="srest">休養日，無賽事</div>`));
+      out.push(`<div class="sday">${d.d}　${d.dt}<span class="dow">（${DOW[d.dt]||""}）</span></div>`);
+      last=d.dt;
+    }
+    out.push(nodeHTML(id));
+  });
+  document.getElementById("schedNarrow").innerHTML=out.join("");
+}
+
 /* ---------- Today ---------- */
 function renderToday(){
   const key=TODAY;
@@ -472,13 +557,14 @@ function renderToday(){
         const [t0,t1]=rowOrder(id);
         const x=team(d[t0]), y=team(d[t1]);
         const i0=t0==="a"?0:1;
-        const sc=d.s[0]!=null?` <span class="mono" style="color:var(--lamp)">${d.s[i0]}－${d.s[1-i0]}</span>`:"";
-        const st=LIVE(id)?` <span class="badge live">${d.status}</span>`:"";
+        const sc=d.s[0]!=null?`<span class="sc2 mono" style="color:var(--lamp)">${d.s[i0]}－${d.s[1-i0]}</span>`:"";
+        const st=LIVE(id)?`<span class="badge live">${d.status}</span>`:"";
         const href=d.gid?BOX_BASE+d.gid+BOX_PATH:BOX_FALLBACK;
-        return `<li><span class="tm mono">${d.t}</span>
-          <span class="mono" style="color:var(--dim);font-size:12px">${label(id)}</span>
-          <span>${x?x.n:slotLabel(d[t0])} － ${y?y.n:slotLabel(d[t1])}</span>${sc}${st}
-          <a class="mono" style="font-size:11px;color:var(--dirt)" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
+        return `<li><span class="tm mono">${d.t}</span>`
+          + `<span class="rd mono" style="color:var(--dim);font-size:12px">${label(id)}</span>`
+          + `<span class="mu">${x?x.n:slotLabel(d[t0])} － ${y?y.n:slotLabel(d[t1])}</span>`
+          + sc + st
+          + `<a class="bx mono" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
       }).join("")+"</ul>";
     document.querySelectorAll(`#sched tr[data-dt="${key}"]`).forEach(tr=>tr.classList.add("now"));
   } else if(REST.includes(key)){
@@ -558,6 +644,15 @@ function renderAll(){
       renderAll();
     }catch(e){ /* file:// 或離線，忽略 */ }
   }, REFRESH_MS);
+
+  // 跨過窄螢幕斷點時重畫（手機轉向、桌機縮放視窗）
+  let wasNarrow = isNarrow(), rt = null;
+  window.addEventListener("resize", ()=>{
+    clearTimeout(rt);
+    rt = setTimeout(()=>{
+      if(isNarrow() !== wasNarrow){ wasNarrow = isNarrow(); renderAll(); }
+    }, 200);
+  });
 })();
 </script>
 </body>
