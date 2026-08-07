@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/07 17:36 JST",
+ "updated": "2026/08/07 18:52 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -64,19 +64,19 @@
   },
   "r1-6": {
    "gid": "2021048485",
-   "status": "6回裏",
+   "status": "試合終了",
    "teams": [
     "立命館宇治",
     "有明"
    ],
    "score": [
     3,
-    0
+    6
    ]
   },
   "r1-7": {
    "gid": "2021048486",
-   "status": "見どころ",
+   "status": "スタメン",
    "teams": [
     "立正大淞南",
     "長崎日大"
