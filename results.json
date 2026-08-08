@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/08 17:22 JST",
+ "updated": "2026/08/08 19:04 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -112,22 +112,26 @@
   },
   "r1-10": {
    "gid": "2021048489",
-   "status": "6回表",
+   "status": "試合終了",
    "teams": [
     "日本文理",
     "大分商"
    ],
    "score": [
-    2,
-    2
+    4,
+    6
    ]
   },
   "r1-11": {
    "gid": "2021048490",
-   "status": "見どころ",
+   "status": "2回表",
    "teams": [
-    "英明",
-    "関東第一"
+    "関東第一",
+    "英明"
+   ],
+   "score": [
+    1,
+    0
    ]
   },
   "r1-12": {
