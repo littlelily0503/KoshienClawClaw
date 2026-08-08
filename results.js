@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/08 22:54 JST",
+ "updated": "2026/08/09 08:59 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -136,10 +136,14 @@ window.KOSHIEN_RESULTS = {
   },
   "r1-12": {
    "gid": "2021048491",
-   "status": "見どころ",
+   "status": "5回表",
    "teams": [
     "新田",
     "花巻東"
+   ],
+   "score": [
+    0,
+    2
    ]
   },
   "r1-13": {
