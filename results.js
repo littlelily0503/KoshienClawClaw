@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/09 08:59 JST",
+ "updated": "2026/08/09 13:47 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -136,22 +136,26 @@ window.KOSHIEN_RESULTS = {
   },
   "r1-12": {
    "gid": "2021048491",
-   "status": "5回表",
+   "status": "試合終了",
    "teams": [
     "新田",
     "花巻東"
    ],
    "score": [
-    0,
-    2
+    2,
+    4
    ]
   },
   "r1-13": {
    "gid": "2021048492",
-   "status": "見どころ",
+   "status": "2回表",
    "teams": [
-    "岡山学芸館",
-    "鳥取城北"
+    "鳥取城北",
+    "岡山学芸館"
+   ],
+   "score": [
+    0,
+    0
    ]
   },
   "r1-14": {
