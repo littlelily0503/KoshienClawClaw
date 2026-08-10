@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/10 14:09 JST",
+ "updated": "2026/08/10 14:19 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -196,14 +196,14 @@
   },
   "r1-17": {
    "gid": "2021048496",
-   "status": "3回表",
+   "status": "4回表",
    "teams": [
     "沖縄尚学",
     "横浜"
    ],
    "score": [
     1,
-    2
+    3
    ]
   },
   "r2-1": {
