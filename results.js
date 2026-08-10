@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/10 14:29 JST",
+ "updated": "2026/08/10 14:39 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -196,7 +196,7 @@ window.KOSHIEN_RESULTS = {
   },
   "r1-17": {
    "gid": "2021048496",
-   "status": "4回裏",
+   "status": "5回裏",
    "teams": [
     "沖縄尚学",
     "横浜"
