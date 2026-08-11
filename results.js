@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/11 20:42 JST",
+ "updated": "2026/08/11 20:53 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -268,14 +268,14 @@ window.KOSHIEN_RESULTS = {
   },
   "r2-6": {
    "gid": "2021048502",
-   "status": "9回表",
+   "status": "試合終了",
    "teams": [
     "三重",
     "松商学園"
    ],
    "score": [
     5,
-    1
+    3
    ]
   },
   "r2-7": {
