@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/11 09:16 JST",
+ "updated": "2026/08/11 09:26 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -232,7 +232,7 @@
   },
   "r2-3": {
    "gid": "2021048499",
-   "status": "5回表",
+   "status": "5回裏",
    "teams": [
     "横手",
     "敦賀気比"
