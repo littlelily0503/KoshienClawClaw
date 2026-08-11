@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/11 18:02 JST",
+ "updated": "2026/08/11 18:12 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -256,13 +256,13 @@
   },
   "r2-5": {
    "gid": "2021048501",
-   "status": "9回表",
+   "status": "9回裏",
    "teams": [
     "享栄",
     "履正社"
    ],
    "score": [
-    1,
+    2,
     6
    ]
   },
