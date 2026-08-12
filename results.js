@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/12 14:56 JST",
+ "updated": "2026/08/12 18:47 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -292,7 +292,7 @@ window.KOSHIEN_RESULTS = {
   },
   "r2-8": {
    "gid": "2021048504",
-   "status": "6回裏",
+   "status": "試合終了",
    "teams": [
     "仙台育英",
     "花咲徳栄"
@@ -304,10 +304,14 @@ window.KOSHIEN_RESULTS = {
   },
   "r2-9": {
    "gid": "2021048505",
-   "status": "見どころ",
+   "status": "試合終了",
    "teams": [
     "神村学園",
     "佐野日大"
+   ],
+   "score": [
+    1,
+    3
    ]
   },
   "r2-10": {
@@ -392,7 +396,11 @@ window.KOSHIEN_RESULTS = {
   },
   "r3-4": {
    "gid": "2021048516",
-   "status": "試合前"
+   "status": "試合前",
+   "teams": [
+    "拓大紅陵",
+    "仙台育英"
+   ]
   },
   "r3-5": {
    "gid": "2021048517",
