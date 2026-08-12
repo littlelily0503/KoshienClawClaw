@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/12 14:16 JST",
+ "updated": "2026/08/12 14:26 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -292,7 +292,7 @@ window.KOSHIEN_RESULTS = {
   },
   "r2-8": {
    "gid": "2021048504",
-   "status": "4回表",
+   "status": "5回表",
    "teams": [
     "仙台育英",
     "花咲徳栄"
