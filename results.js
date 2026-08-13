@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/13 15:47 JST",
+ "updated": "2026/08/13 19:44 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -388,7 +388,11 @@ window.KOSHIEN_RESULTS = {
   },
   "r3-6": {
    "gid": "2021048518",
-   "status": "試合前"
+   "status": "試合前",
+   "teams": [
+    "有明",
+    "東日大昌平"
+   ]
   },
   "r3-7": {
    "gid": "2021048519",
