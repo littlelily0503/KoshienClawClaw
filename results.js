@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/14 19:57 JST",
+ "updated": "2026/08/14 20:07 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -355,7 +355,7 @@ window.KOSHIEN_RESULTS = {
    ],
    "score": [
     1,
-    1
+    5
    ]
   },
   "r3-1": {
