@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/15 18:23 JST",
+ "updated": "2026/08/15 18:33 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -396,7 +396,7 @@
   },
   "r3-4": {
    "gid": "2021048516",
-   "status": "中断中",
+   "status": "4回表",
    "teams": [
     "拓大紅陵",
     "仙台育英"
