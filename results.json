@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/15 12:35 JST",
+ "updated": "2026/08/15 13:16 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -372,19 +372,19 @@
   },
   "r3-2": {
    "gid": "2021048514",
-   "status": "7回表",
+   "status": "10回表",
    "teams": [
     "敦賀気比",
     "智弁和歌山"
    ],
    "score": [
     2,
-    0
+    2
    ]
   },
   "r3-3": {
    "gid": "2021048515",
-   "status": "見どころ",
+   "status": "スタメン",
    "teams": [
     "三重",
     "履正社"
