@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/16 01:18 JST",
+ "updated": "2026/08/16 08:45 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -408,10 +408,14 @@ window.KOSHIEN_RESULTS = {
   },
   "r3-5": {
    "gid": "2021048517",
-   "status": "見どころ",
+   "status": "3回表",
    "teams": [
-    "佐野日大",
-    "健大高崎"
+    "健大高崎",
+    "佐野日大"
+   ],
+   "score": [
+    3,
+    1
    ]
   },
   "r3-6": {
