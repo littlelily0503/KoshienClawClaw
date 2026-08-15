@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/15 20:03 JST",
+ "updated": "2026/08/15 20:13 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -396,7 +396,7 @@ window.KOSHIEN_RESULTS = {
   },
   "r3-4": {
    "gid": "2021048516",
-   "status": "9回裏",
+   "status": "試合終了",
    "teams": [
     "拓大紅陵",
     "仙台育英"
