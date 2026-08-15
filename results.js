@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/15 13:46 JST",
+ "updated": "2026/08/15 14:46 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -384,10 +384,14 @@ window.KOSHIEN_RESULTS = {
   },
   "r3-3": {
    "gid": "2021048515",
-   "status": "スタメン",
+   "status": "2回裏",
    "teams": [
     "三重",
     "履正社"
+   ],
+   "score": [
+    3,
+    0
    ]
   },
   "r3-4": {
