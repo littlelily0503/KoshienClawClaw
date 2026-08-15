@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/15 19:04 JST",
+ "updated": "2026/08/15 19:14 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -402,7 +402,7 @@ window.KOSHIEN_RESULTS = {
     "仙台育英"
    ],
    "score": [
-    1,
+    3,
     5
    ]
   },
