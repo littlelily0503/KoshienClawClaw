@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/15 21:15 JST",
+ "updated": "2026/08/15 22:43 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -440,7 +440,7 @@
   },
   "qf1": {
    "gid": "2021048521",
-   "status": "試合前",
+   "status": "見どころ",
    "teams": [
     "天理",
     "三重"
@@ -448,7 +448,7 @@
   },
   "qf2": {
    "gid": "2021048522",
-   "status": "試合前",
+   "status": "見どころ",
    "teams": [
     "仙台育英",
     "智弁和歌山"
