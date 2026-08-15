@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/15 15:16 JST",
+ "updated": "2026/08/15 16:43 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -384,19 +384,19 @@
   },
   "r3-3": {
    "gid": "2021048515",
-   "status": "5回表",
+   "status": "試合終了",
    "teams": [
     "三重",
     "履正社"
    ],
    "score": [
     5,
-    0
+    2
    ]
   },
   "r3-4": {
    "gid": "2021048516",
-   "status": "見どころ",
+   "status": "スタメン",
    "teams": [
     "拓大紅陵",
     "仙台育英"
@@ -436,7 +436,11 @@
   },
   "qf1": {
    "gid": "2021048521",
-   "status": "試合前"
+   "status": "試合前",
+   "teams": [
+    "天理",
+    "三重"
+   ]
   },
   "qf2": {
    "gid": "2021048522",
