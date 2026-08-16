@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/16 09:05 JST",
+ "updated": "2026/08/16 09:15 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": {
   "r1-1": {
@@ -408,7 +408,7 @@
   },
   "r3-5": {
    "gid": "2021048517",
-   "status": "5回表",
+   "status": "5回裏",
    "teams": [
     "健大高崎",
     "佐野日大"
