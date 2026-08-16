@@ -58,13 +58,31 @@ h2{font-size:13px;letter-spacing:.3em;color:var(--lamp);font-weight:700;margin:0
   display:flex;flex-direction:column}
 .node.cur{border-color:var(--lamp)}
 .node.live{border-color:var(--live);background:#2A1E18}
+.node.cancel{border-color:#6E6152;background:#241F1A}
+.node.cancel .tn{text-decoration:line-through;text-decoration-thickness:1px}
 .node.live .nhead{background:rgba(224,91,75,.16)}
 .badge.live{flex:none;font-size:9px;font-weight:700;padding:1px 4px;border-radius:2px;
   white-space:nowrap;background:var(--live);color:#fff;display:inline-flex;align-items:center;gap:3px}
 .nhead .badge.live{margin-left:auto}
+.badge.cancel,.badge.moved{flex:none;font-size:9px;font-weight:700;padding:1px 4px;
+  border-radius:2px;white-space:nowrap}
+.badge.cancel{background:#6E6152;color:#EFEAD9}
+.badge.moved{background:transparent;border:1px solid var(--dirt);color:var(--dirt)}
+.nhead .badge.cancel,.nhead .badge.moved{margin-left:auto}
+#stale{display:none;margin:22px 0 0;padding:12px 16px;font-size:13px;
+  border:1px solid var(--live);background:rgba(224,91,75,.12);color:var(--chalk)}
+#stale b{color:var(--live)}
 .badge.live::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:blink 1.4s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 @media(prefers-reduced-motion:reduce){.nhead .badge.live{margin-left:auto}
+.badge.cancel,.badge.moved{flex:none;font-size:9px;font-weight:700;padding:1px 4px;
+  border-radius:2px;white-space:nowrap}
+.badge.cancel{background:#6E6152;color:#EFEAD9}
+.badge.moved{background:transparent;border:1px solid var(--dirt);color:var(--dirt)}
+.nhead .badge.cancel,.nhead .badge.moved{margin-left:auto}
+#stale{display:none;margin:22px 0 0;padding:12px 16px;font-size:13px;
+  border:1px solid var(--live);background:rgba(224,91,75,.12);color:var(--chalk)}
+#stale b{color:var(--live)}
 .badge.live::before{animation:none}}
 .ha{font-size:9px;color:var(--dim);border:1px solid var(--line);padding:0 3px;border-radius:2px;flex:none}
 .trow.w .ha{border-color:var(--lamp);color:var(--lamp)}
@@ -169,6 +187,8 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-si
 </header>
 
 <div class="wrap">
+
+<div id="stale"></div>
 
 <section>
   <h2 class="mono">TODAY</h2>
@@ -300,9 +320,26 @@ DATA.sf2.a={f:sfSrc.sf2.a}; DATA.sf2.b={f:sfSrc.sf2.b};
 
 const RN = {1:"1回戰",2:"2回戰",3:"3回戰",4:"八強賽",5:"四強賽",6:"決賽"};
 const IDS = Object.keys(DATA);
+
+const DCMP = (x,y)=>{ const p=z=>String(z).split("/").map(Number);
+  const[a1,a2]=p(x),[b1,b2]=p(y); return a1-b1||a2-b2; };
+const TCMP = (x,y)=>{ const p=z=>String(z).split(":").map(Number);
+  const[a1,a2]=p(x),[b1,b2]=p(y); return a1-b1||a2-b2; };
+// 順延後日期會亂序，賽程一律依實際日期時刻重排
+const schedIDS = ()=> IDS.slice().sort((x,y)=>
+  DCMP(DATA[x].dt,DATA[y].dt) || TCMP(DATA[x].t,DATA[y].t)
+  || IDS.indexOf(x)-IDS.indexOf(y));
+// 休養日：原定的休養日若因順延排入比賽，就不再是休養日
+const restDays = ()=> REST.filter(r=>!IDS.some(id=>DATA[id].dt===r));
 // スポーツナビ 場次編號為連號，且 DATA 依出賽順序定義
 const GID0 = 2021048480;
-IDS.forEach((k,i)=>{ if(!DATA[k].gid) DATA[k].gid = String(GID0+i); });
+IDS.forEach((k,i)=>{
+  const d = DATA[k];
+  if(!d.gid) d.gid = String(GID0+i);
+  d.gid0 = d.gid;      // 原始場次編號
+  d.dt0  = d.dt;       // 原定日期
+  d.t0   = d.t;        // 原定開賽時刻
+});
 const num = id => { const m=id.match(/(\d+)$/); return m?+m[1]:null; };
 const label = id => {
   const d=DATA[id];
@@ -310,8 +347,9 @@ const label = id => {
   if(d.r>=4) return RN[d.r]+" 第"+num(id)+"試合";
   return RN[d.r]+" 第"+num(id)+"試合";
 };
-const FIN  = id => !DATA[id].status || /試合終了/.test(DATA[id].status);
-const LIVE = id => /\d+回(表|裏)/.test(DATA[id].status||"");
+const FIN    = id => !DATA[id].status || /試合終了/.test(DATA[id].status);
+const LIVE   = id => /\d+回(表|裏)/.test(DATA[id].status||"");
+const CANCEL = id => /中止|順延/.test(DATA[id].status||"");
 // 進行中的比分不算數，否則 1-0 領先會被誤判為晉級
 const decided = id => {
   const s=DATA[id].s;
@@ -371,8 +409,11 @@ function nodeHTML(id, extra=""){
       : `<div class="trow"><span class="pend">${slotLabel(d[side])}</span><span class="sc mono">${sc}</span></div>`;
   };
 
-  const badge = live ? `<span class="badge live">${d.status}</span>` : "";
-  const cls = [extra, live?"live":""].filter(Boolean).join(" ");
+  let badge = "";
+  if(live)            badge = `<span class="badge live">${d.status}</span>`;
+  else if(CANCEL(id)) badge = `<span class="badge cancel">中止</span>`;
+  else if(d.moved)    badge = `<span class="badge moved">順延</span>`;
+  const cls = [extra, live?"live":"", CANCEL(id)?"cancel":""].filter(Boolean).join(" ");
   return `<div class="node ${cls}">
     <div class="nhead"><span class="rn">${label(id)}</span>${boxLink(id)}${badge}</div>
     <div class="nbody">${row(top, top===hs)}${row(bot, bot===hs)}</div>
@@ -509,18 +550,21 @@ function renderFinals(){
 /* ---------- 完整賽程 ---------- */
 function renderSchedule(){
   if(isNarrow()) return renderScheduleNarrow();
-  const cmp=(x,y)=>{const p=s=>s.split("/").map(Number);const[a1,a2]=p(x),[b1,b2]=p(y);return a1-b1||a2-b2;};
   const rows=[]; let last=null;
-  IDS.forEach(id=>{
+  const rest=restDays();
+  schedIDS().forEach(id=>{
     const d=DATA[id], isNew=d.dt!==last;
-    if(isNew&&last) REST.filter(r=>cmp(r,last)>0&&cmp(r,d.dt)<0).forEach(r=>
+    if(isNew&&last) rest.filter(r=>DCMP(r,last)>0&&DCMP(r,d.dt)<0).forEach(r=>
       rows.push(`<tr class="db"><td class="d">－</td><td class="d">${r}</td><td class="t mono">－</td><td class="rnd">休養日</td><td>－</td><td></td></tr>`));
     const [t0,t1]=rowOrder(id);
     const x=team(d[t0]), y=team(d[t1]);
     const card=(x?`${x.n}（${x.p}）`:slotLabel(d[t0]))+" － "+(y?`${y.n}（${y.p}）`:slotLabel(d[t1]));
     const i0=t0==="a"?0:1;
     const sc=d.s[0]!=null?`${d.s[i0]} － ${d.s[1-i0]}`:"";
-    const stat=LIVE(id)?` <span class="st">${d.status}</span>`:"";
+    let stat="";
+    if(LIVE(id))        stat=` <span class="st">${d.status}</span>`;
+    else if(CANCEL(id)) stat=` <span class="st" style="color:#9A8A76">中止</span>`;
+    else if(d.moved)    stat=` <span class="st" style="color:var(--dirt)">順延</span>`;
     rows.push(`<tr class="${[isNew?"db":"",LIVE(id)?"live":""].filter(Boolean).join(" ")}" data-dt="${d.dt}">
       <td class="d">${isNew?d.d:""}</td><td class="d">${isNew?d.dt:""}</td>
       <td class="t">${boxLink(id).replace(d.dt+" ","")}</td>
@@ -536,12 +580,12 @@ function renderScheduleNarrow(){
   const DOW={"8/5":"三","8/6":"四","8/7":"五","8/8":"六","8/9":"日","8/10":"一","8/11":"二",
              "8/12":"三","8/13":"四","8/14":"五","8/15":"六","8/16":"日","8/17":"一",
              "8/18":"二","8/19":"三","8/20":"四","8/21":"五","8/22":"六"};
-  const cmp=(x,y)=>{const p=z=>z.split("/").map(Number);const[a1,a2]=p(x),[b1,b2]=p(y);return a1-b1||a2-b2;};
   const out=[]; let last=null;
-  IDS.forEach(id=>{
+  const rest=restDays();
+  schedIDS().forEach(id=>{
     const d=DATA[id];
     if(d.dt!==last){
-      if(last) REST.filter(r=>cmp(r,last)>0&&cmp(r,d.dt)<0).forEach(r=>
+      if(last) rest.filter(r=>DCMP(r,last)>0&&DCMP(r,d.dt)<0).forEach(r=>
         out.push(`<div class="sday">${r}<span class="dow">（${DOW[r]||""}）</span></div><div class="srest">休養日，無賽事</div>`));
       out.push(`<div class="sday">${d.d}　${d.dt}<span class="dow">（${DOW[d.dt]||""}）</span></div>`);
       last=d.dt;
@@ -557,7 +601,7 @@ function renderToday(){
     ? `<span>${tm.n}<span class="tp"> ${tm.p}</span></span>`
     : `<span style="color:var(--dim)">${slotLabel(slot)}</span>`;
   const key=TODAY;
-  const list=IDS.filter(id=>DATA[id].dt===key);
+  const list=schedIDS().filter(id=>DATA[id].dt===key);
   const box=document.getElementById("today");
   if(list.length){
     box.innerHTML=`<h3 class="mono">${DATA[list[0]].d}　${key}（日本時間）`
@@ -578,7 +622,7 @@ function renderToday(){
           + `<a class="bx mono" href="${href}" target="_blank" rel="noopener">box ↗</a></li>`;
       }).join("")+"</ul>";
     document.querySelectorAll(`#sched tr[data-dt="${key}"]`).forEach(tr=>tr.classList.add("now"));
-  } else if(REST.includes(key)){
+  } else if(restDays().includes(key)){
     box.innerHTML=`<h3 class="mono">${key}（日本時間）</h3><p style="margin:0">休養日，無賽事。</p>`;
   } else {
     box.innerHTML=`<h3 class="mono">${key}（日本時間）</h3><p style="margin:0">今日非大會期間。</p>`;
@@ -589,40 +633,105 @@ function renderToday(){
 const NORM = s => String(s)
   .replace(/[辯辨]/g,"弁").replace(/[ケヶ]/g,"ケ")
   .replace(/[ 　]/g,"").trim();
+const TNORM = s => String(s||"").replace(/^0/,"");            // "08:00" → "8:00"
+const PAIR  = (x,y) => [NORM(x),NORM(y)].sort().join("|");
 
+/* 對應 Yahoo 的比賽列到我們的籤表編號。
+   順延會同時改掉日期與 gid（實測原列保留為「試合中止」、另開新列且 gid 跳號），
+   唯一穩定的鍵是「輪次 + 對戰組合」，故以此為主、原定日期時刻與 gid 為備援。 */
 function applyResults(res){
-  if(!res || !res.games) return;
-  // 依出賽順序套用，確保晉級隊伍已解析完才對齊下一輪
+  if(!res) return;
+  if(res.updated) UPDATED = res.updated;
+
+  const rows = Array.isArray(res.games) ? res.games : null;
+  if(!rows){ console.warn("results 格式過舊，改用內建籤表"); return; }
+
+  const byRound = {};
+  rows.forEach((r,i)=>{ r._i=i; (byRound[r.round]=byRound[r.round]||[]).push(r); });
+  const used = new Set();
+
   IDS.forEach(id=>{
-    const g=res.games[id];
-    if(!g) return;
-    if(g.gid) DATA[id].gid=g.gid;
-    if(g.status) DATA[id].status=g.status;
+    const d = DATA[id];
+    const cand = (byRound[d.r]||[]).filter(r=>!used.has(r._i));
+    const a = team(d.a), b = team(d.b);
+    let row = null;
 
-    const a=team(DATA[id].a), b=team(DATA[id].b);
+    // 1) 輪次 + 對戰組合。順延時同組合會有兩列，優先取有比分的那列
+    if(a && b){
+      const want = PAIR(a.n, b.n);
+      const hit = cand.filter(r => r.teams && r.teams.length===2
+                                && PAIR(r.teams[0], r.teams[1])===want);
+      row = hit.find(r=>r.score) || hit.find(r=>!/中止/.test(r.status)) || hit[0];
+    }
+    // 2) 只有一邊確定（上一輪中止或未打完）→ 用該隊是否出現在列中比對。
+    //    單淘汰下同一隊在同一輪只會出現一次，不會誤配。
+    if(!row && (a || b)){
+      const one = NORM((a||b).n);
+      const hit = cand.filter(r => r.teams && r.teams.some(t=>NORM(t)===one));
+      row = hit.find(r=>r.score) || hit.find(r=>!/中止/.test(r.status)) || hit[0];
+    }
+    // 3) 兩邊都未定（尚未抽籤）→ 用原定日期時刻
+    if(!row) row = cand.find(r => r.date===d.dt0 && TNORM(r.time)===TNORM(d.t0));
+    // 4) 最後才用原始場次編號
+    if(!row) row = cand.find(r => r.gid===d.gid0);
+    if(!row) return;
 
-    // スポーツナビ 一律「後攻 － 先攻」排列，teams[0] 即主隊。
-    // 開打前不重排，故僅在有 status 且非「試合前／見どころ」時採信。
-    if(a && b && Array.isArray(g.teams) && (LIVE(id) || FIN(id) && g.score)){
-      const [g0,g1]=g.teams.map(NORM);
-      if(g0===NORM(a.n) && g1===NORM(b.n)) DATA[id].home="a";
-      else if(g0===NORM(b.n) && g1===NORM(a.n)) DATA[id].home="b";
+    used.add(row._i);
+    d.gid    = row.gid;
+    d.status = row.status;
+    d.dt     = row.date;
+    d.t      = row.time;
+    if(row.day) d.d = row.day;
+    // 只有換日才算順延；同日內因插入重賽而時間微調不算，直接更新時刻即可
+    d.moved  = (row.date!==d.dt0);
+
+    if(!row.teams || row.teams.length!==2) return;
+
+    // Yahoo 一律「後攻 － 先攻」。只要有一邊的隊名確定，就能判斷那一列的
+    // 左右對應到我們的哪一格；兩邊都無法對應時「不套用比分」，因為方向不明的
+    // 比分會導致勝隊判錯，而錯誤會沿著籤表一路傳下去。
+    const g0 = NORM(row.teams[0]), g1 = NORM(row.teams[1]);
+    let flip = null;                       // false: teams[0] 對應 a；true: 對應 b
+    if      (a && NORM(a.n)===g0) flip = false;
+    else if (a && NORM(a.n)===g1) flip = true;
+    else if (b && NORM(b.n)===g1) flip = false;
+    else if (b && NORM(b.n)===g0) flip = true;
+
+    if(flip===null){
+      if(row.score && a && b) console.warn("校名對不上：", id, row.teams, [a.n, b.n]);
+      return;                              // 方向不明，寧可留空
     }
 
-    if(!Array.isArray(g.score) || g.score[0]==null) return;
-    let sc=[g.score[0], g.score[1]];
-    if(a && b && Array.isArray(g.teams)){
-      const [g0,g1]=g.teams.map(NORM);
-      if(g0===NORM(b.n) && g1===NORM(a.n)) sc=[g.score[1], g.score[0]];
-      else if(g0!==NORM(a.n)) console.warn("校名對不上：",id,g.teams,[a.n,b.n]);
-    }
-    DATA[id].s=sc;
+    // 開打前的先後攻尚未猜拳決定，Yahoo 的排列此時不代表主客
+    if(row.score || /終了|回表|回裏/.test(row.status)) d.home = flip ? "b" : "a";
+    if(row.score) d.s = flip ? [row.score[1], row.score[0]] : row.score.slice();
   });
-  if(res.updated) UPDATED=res.updated;
+}
+
+/* 資料新鮮度。GitHub 的排程會被丟棄，抓取失敗時畫面必須看得出來，
+   否則舊資料會被誤認為最新狀態。 */
+function updatedAgeMin(){
+  const m = /(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/.exec(UPDATED||"");
+  if(!m) return null;
+  const then = Date.UTC(+m[1], +m[2]-1, +m[3], +m[4]-9, +m[5]);   // JST → UTC
+  return Math.floor((Date.now()-then)/60000);
+}
+
+function renderStale(){
+  const el = document.getElementById("stale");
+  if(!el) return;
+  const age = updatedAgeMin();
+  const inMeet = IDS.some(id => DATA[id].dt===TODAY);
+  if(age===null || age<90 || !inMeet){ el.style.display="none"; return; }
+  const h = Math.floor(age/60), mm = age%60;
+  el.style.display = "block";
+  el.innerHTML = `<b>資料可能不是最新的</b>　最後更新於 ${h?h+" 小時 ":""}${mm} 分鐘前`
+    + `（${UPDATED}）。自動更新排程可能被略過，可稍後重新整理，`
+    + `或到 GitHub Actions 手動觸發一次。`;
 }
 
 function renderAll(){
-  renderBlocks(); renderFinals(); renderSchedule(); renderToday();
+  renderBlocks(); renderFinals(); renderSchedule(); renderToday(); renderStale();
   document.getElementById("updated").textContent=UPDATED;
 }
 
