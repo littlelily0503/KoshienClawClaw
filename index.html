@@ -314,11 +314,18 @@ const REST = ["8/17","8/19","8/21"];
 
 for(const k in DRAW){ if(DRAW[k]){ DATA[k].a={f:DRAW[k].a}; DATA[k].b={f:DRAW[k].b}; } }
 // 四強來源：未抽籤時採用預設骨架，抽籤後依 DRAW 重新排位，避免連線交叉
+// 四強在抽籤前沒有真正的來源，先放一組預設骨架讓籤表畫得出來，
+// 並標記為推測值，等 Yahoo 公布配對後由 linkFromTeams() 覆蓋。
 const sfSrc = { sf1: DRAW.sf1 || {a:"qf1",b:"qf2"}, sf2: DRAW.sf2 || {a:"qf3",b:"qf4"} };
-DATA.sf1.a={f:sfSrc.sf1.a}; DATA.sf1.b={f:sfSrc.sf1.b};
-DATA.sf2.a={f:sfSrc.sf2.a}; DATA.sf2.b={f:sfSrc.sf2.b};
+DATA.sf1.a={f:sfSrc.sf1.a}; DATA.sf1.b={f:sfSrc.sf1.b}; DATA.sf1.guessed=!DRAW.sf1;
+DATA.sf2.a={f:sfSrc.sf2.a}; DATA.sf2.b={f:sfSrc.sf2.b}; DATA.sf2.guessed=!DRAW.sf2;
 
+const NORM = s => String(s)
+  .replace(/[辯辨]/g,"弁").replace(/[ケヶ]/g,"ケ")
+  .replace(/[ 　]/g,"").trim();
 const RN = {1:"1回戰",2:"2回戰",3:"3回戰",4:"八強賽",5:"四強賽",6:"決賽"};
+// 校名 → 都道府縣。八強直接採用 Yahoo 的隊名時，用來補回縣名。
+const PREF = {};
 const IDS = Object.keys(DATA);
 
 const DCMP = (x,y)=>{ const p=z=>String(z).split("/").map(Number);
@@ -335,6 +342,7 @@ const restDays = ()=> REST.filter(r=>!IDS.some(id=>DATA[id].dt===r));
 const GID0 = 2021048480;
 IDS.forEach((k,i)=>{
   const d = DATA[k];
+  ["a","b"].forEach(side=>{ const t=d[side]; if(t && t.n) PREF[NORM(t.n)] = t.p; });
   if(!d.gid) d.gid = String(GID0+i);
   d.gid0 = d.gid;      // 原始場次編號
   d.dt0  = d.dt;       // 原定日期
@@ -493,7 +501,7 @@ function renderBlocks(){ document.getElementById("blocks").innerHTML =
 function renderFinals(){
   const el0=document.getElementById("finals");
   if(isNarrow()){
-    const L=[sfSrc.sf1.a, sfSrc.sf1.b], R=[sfSrc.sf2.a, sfSrc.sf2.b];
+    const L=[DATA.sf1.a.f, DATA.sf1.b.f], R=[DATA.sf2.a.f, DATA.sf2.b.f];
     const grp=(lbl,ids)=>`<div class="rgroup"><div class="rlabel">${lbl}</div>${ids.map(id=>nodeHTML(id)).join("")}</div>`;
     const QF=[...L, ...R];
     // 八強全部打完後只剩三場，把最重要的擺最上面
@@ -503,7 +511,7 @@ function renderFinals(){
     el0.style.width=""; el0.style.height="";
     el0.innerHTML=`<div class="stack">${g.join("")}</div>`;
     document.getElementById("fnote").textContent =
-      DRAW.qf1 ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）";
+      (DATA.qf1.a ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）");
     return;
   }
   const QW=196, QH=80, CG=44;
@@ -512,7 +520,7 @@ function renderFinals(){
   const yTop=0, yBot=210, yMid=(yTop+yBot)/2;
   const h=yBot+QH;
 
-  const L=[sfSrc.sf1.a, sfSrc.sf1.b], R=[sfSrc.sf2.a, sfSrc.sf2.b];
+  const L=[DATA.sf1.a.f, DATA.sf1.b.f], R=[DATA.sf2.a.f, DATA.sf2.b.f];
   const place=[];
   const put=(id,x,y,extra="")=>place.push(
     `<div style="left:${x}px;top:${y}px;position:absolute">${nodeHTML(id,extra)}</div>`);
@@ -544,7 +552,7 @@ function renderFinals(){
   el.style.width=w+"px"; el.style.height=h+"px";
   el.innerHTML=svg+place.join("");
   document.getElementById("fnote").textContent =
-    DRAW.qf1 ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）";
+    (DATA.qf1.a ? "八強配對已抽出" : "8 個空位　／　八強配對尚未抽籤（8/16 三回戰結束後）");
 }
 
 /* ---------- 完整賽程 ---------- */
@@ -630,11 +638,33 @@ function renderToday(){
 }
 
 /* ---------- results.json ---------- */
-const NORM = s => String(s)
-  .replace(/[辯辨]/g,"弁").replace(/[ケヶ]/g,"ケ")
-  .replace(/[ 　]/g,"").trim();
 const TNORM = s => String(s||"").replace(/^0/,"");            // "08:00" → "8:00"
 const PAIR  = (x,y) => [NORM(x),NORM(y)].sort().join("|");
+
+/* 八強以後的配對是賽後現場抽籤決定的，籤表上沒有結構可循，原本只能人工填 DRAW。
+   但 Yahoo 公布配對後會把隊名寫進該列，於是可以反推「這隊是哪一場打上來的」，
+   自動把來源接起來。人工 DRAW 仍然優先，作為 Yahoo 延遲時的覆寫手段。 */
+function linkFromTeams(id, row){
+  const d = DATA[id];
+  if(d.r < 4 || !row.teams || row.teams.length !== 2) return false;
+  if(d.a && d.b && !d.guessed) return false;          // 已由 DRAW 指定
+  const src = name => IDS.find(k => {
+    if(DATA[k].r !== d.r - 1) return false;
+    const w = winner(k);
+    return w && NORM(w.n) === NORM(name);
+  });
+  const s0 = src(row.teams[0]), s1 = src(row.teams[1]);
+  if(s0 && s1 && s0 !== s1){
+    d.a = {f:s0}; d.b = {f:s1}; d.guessed = false;
+    return true;
+  }
+  // 反推失敗（上游未解析、校名寫法不同等）時，直接採用 Yahoo 公布的隊名。
+  // 八強以後是重新抽籤，來源自哪一分區並不影響任何顯示，
+  // 沒有必要因為接不上來源就整組空白。
+  const lit = t => ({ n:t, p: PREF[NORM(t)] || "" });
+  d.a = lit(row.teams[0]); d.b = lit(row.teams[1]); d.guessed = false;
+  return true;
+}
 
 /* 對應 Yahoo 的比賽列到我們的籤表編號。
    順延會同時改掉日期與 gid（實測原列保留為「試合中止」、另開新列且 gid 跳號），
@@ -653,7 +683,7 @@ function applyResults(res){
   IDS.forEach(id=>{
     const d = DATA[id];
     const cand = (byRound[d.r]||[]).filter(r=>!used.has(r._i));
-    const a = team(d.a), b = team(d.b);
+    let a = team(d.a), b = team(d.b);
     let row = null;
 
     // 1) 輪次 + 對戰組合。順延時同組合會有兩列，優先取有比分的那列
@@ -686,6 +716,9 @@ function applyResults(res){
     d.moved  = (row.date!==d.dt0);
 
     if(!row.teams || row.teams.length!==2) return;
+
+    // 八強／四強：Yahoo 公布配對後自動接上來源場次
+    if(d.r >= 4 && linkFromTeams(id, row)){ a = team(d.a); b = team(d.b); }
 
     // Yahoo 一律「後攻 － 先攻」。只要有一邊的隊名確定，就能判斷那一列的
     // 左右對應到我們的哪一格；兩邊都無法對應時「不套用比分」，因為方向不明的
@@ -721,7 +754,11 @@ function renderStale(){
   const el = document.getElementById("stale");
   if(!el) return;
   const age = updatedAgeMin();
-  const inMeet = IDS.some(id => DATA[id].dt===TODAY);
+  // 判斷是否在大會期間，而非「今天有比賽」——休養日的資料一樣可能過期，
+  // 而使用者在休養日仍會來看前一天的結果與八強籤表。
+  const days = IDS.map(id => DATA[id].dt);
+  const inMeet = days.length && DCMP(TODAY, days.reduce((a,b)=>DCMP(a,b)<0?a:b)) >= 0
+                             && DCMP(TODAY, days.reduce((a,b)=>DCMP(a,b)>0?a:b)) <= 0;
   if(age===null || age<90 || !inMeet){ el.style.display="none"; return; }
   const h = Math.floor(age/60), mm = age%60;
   el.style.display = "block";
