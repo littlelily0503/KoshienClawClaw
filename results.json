@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/18 12:42 JST",
+ "updated": "2026/08/18 14:05 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": [
   {
@@ -692,14 +692,14 @@
    "day": "第13日",
    "date": "8/18",
    "time": "10:30",
-   "status": "6回裏",
+   "status": "試合終了",
    "teams": [
     "仙台育英",
     "智弁和歌山"
    ],
    "score": [
-    1,
-    8
+    3,
+    11
    ]
   },
   {
@@ -708,7 +708,7 @@
    "day": "第13日",
    "date": "8/18",
    "time": "13:00",
-   "status": "見どころ",
+   "status": "スタメン",
    "teams": [
     "花巻東",
     "横浜"
