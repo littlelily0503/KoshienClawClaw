@@ -1,5 +1,5 @@
 window.KOSHIEN_RESULTS = {
- "updated": "2026/08/18 08:50 JST",
+ "updated": "2026/08/18 09:00 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": [
   {
@@ -676,7 +676,7 @@ window.KOSHIEN_RESULTS = {
    "day": "第13日",
    "date": "8/18",
    "time": "8:00",
-   "status": "4回表",
+   "status": "5回裏",
    "teams": [
     "三重",
     "天理"
