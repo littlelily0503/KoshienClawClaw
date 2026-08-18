@@ -53,6 +53,7 @@ RE_TIME = re.compile(r"\b(\d{1,2}:\d{2})\b")
 RE_SCORE = re.compile(r"(\d+)\s*[-－ー]\s*(\d+)")
 RE_GAME = re.compile(r"/game/(\d+)/")
 RE_ROUND = re.compile("|".join(map(re.escape, ROUNDS)))
+RE_NO = re.compile(r"第(\d{1,2})試合")
 
 
 def fetch_html(url: str) -> str:
@@ -105,9 +106,12 @@ def parse(html: str):
         head = text.split(status)[0] if status in text else text
         ms = RE_SCORE.search(head)
 
+        mn = RE_NO.search(text)
+
         row = {
             "gid": gid,
             "round": ROUNDS[mr.group(0)],
+            "no": int(mn.group(1)) if mn else None,   # 該輪的第幾試合（Yahoo 的編號）
             "day": cur_day,
             "date": cur_date,
             "time": mt.group(1).lstrip("0") or "0:00",

@@ -696,6 +696,29 @@ function applyResults(res){
     let a = team(d.a), b = team(d.b);
     let row = null;
 
+    // 八強以後沒有籤表結構可推，配對是現場抽籤決定的。
+    // Yahoo 的「第N試合」就是唯一事實，直接照編號對應，不做任何猜測。
+    if(d.r >= 4){
+      const hit = cand.filter(r => r.no === num(id));
+      row = hit.find(r=>r.score) || hit.find(r=>!/中止/.test(r.status)) || hit[0]
+            || cand.find(r => r.date===d.dt0 && TNORM(r.time)===TNORM(d.t0));
+      if(!row) return;
+      used.add(row._i);
+      d.gid=row.gid; d.status=row.status; d.dt=row.date; d.t=row.time;
+      if(row.day) d.d=row.day;
+      d.moved = (row.date!==d.dt0);
+      if(!row.teams || row.teams.length!==2) return;
+      linkFromTeams(id, row);
+      a = team(d.a); b = team(d.b);
+      const q0=NORM(row.teams[0]);
+      if(a && b){
+        const fl = NORM(b.n)===q0;
+        if(row.score || /終了|回表|回裏/.test(row.status)) d.home = fl ? "b" : "a";
+        if(row.score) d.s = fl ? [row.score[1], row.score[0]] : row.score.slice();
+      }
+      return;
+    }
+
     // 1) 輪次 + 對戰組合。順延時同組合會有兩列，優先取有比分的那列
     if(a && b){
       const want = PAIR(a.n, b.n);
@@ -726,9 +749,6 @@ function applyResults(res){
     d.moved  = (row.date!==d.dt0);
 
     if(!row.teams || row.teams.length!==2) return;
-
-    // 八強／四強：Yahoo 公布配對後自動接上來源場次
-    if(d.r >= 4 && linkFromTeams(id, row)){ a = team(d.a); b = team(d.b); }
 
     // Yahoo 一律「後攻 － 先攻」。只要有一邊的隊名確定，就能判斷那一列的
     // 左右對應到我們的哪一格；兩邊都無法對應時「不套用比分」，因為方向不明的
