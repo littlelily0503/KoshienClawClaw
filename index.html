@@ -498,10 +498,20 @@ function renderBlocks(){ document.getElementById("blocks").innerHTML =
   [1,2,3,4,5,6,7,8].map(renderBlock).join(""); }
 
 /* ---------- 八強籤表（左右向中間匯聚） ---------- */
+// 取四強兩側的八強來源，並保證四場各出現一次
+function finalsSources(){
+  const pick = k => [DATA[k].a, DATA[k].b].map(x => x && x.f).filter(Boolean);
+  const L = pick("sf1"), R = pick("sf2");
+  const all = L.concat(R);
+  const ok = all.length === 4 && new Set(all).size === 4
+             && ["qf1","qf2","qf3","qf4"].every(q => all.includes(q));
+  return ok ? [L, R] : [["qf1","qf2"], ["qf3","qf4"]];
+}
+
 function renderFinals(){
   const el0=document.getElementById("finals");
   if(isNarrow()){
-    const L=[DATA.sf1.a.f, DATA.sf1.b.f], R=[DATA.sf2.a.f, DATA.sf2.b.f];
+    const [L,R]=finalsSources();
     const grp=(lbl,ids)=>`<div class="rgroup"><div class="rlabel">${lbl}</div>${ids.map(id=>nodeHTML(id)).join("")}</div>`;
     const QF=[...L, ...R];
     // 八強全部打完後只剩三場，把最重要的擺最上面
@@ -520,7 +530,7 @@ function renderFinals(){
   const yTop=0, yBot=210, yMid=(yTop+yBot)/2;
   const h=yBot+QH;
 
-  const L=[DATA.sf1.a.f, DATA.sf1.b.f], R=[DATA.sf2.a.f, DATA.sf2.b.f];
+  const [L,R]=finalsSources();
   const place=[];
   const put=(id,x,y,extra="")=>place.push(
     `<div style="left:${x}px;top:${y}px;position:absolute">${nodeHTML(id,extra)}</div>`);
@@ -738,6 +748,36 @@ function applyResults(res){
     // 開打前的先後攻尚未猜拳決定，Yahoo 的排列此時不代表主客
     if(row.score || /終了|回表|回裏/.test(row.status)) d.home = flip ? "b" : "a";
     if(row.score) d.s = flip ? [row.score[1], row.score[0]] : row.score.slice();
+  });
+
+  reconcileSemis();
+}
+
+/* 四強只有一邊公布時，另一邊的預設骨架會和已公布的那邊撞號
+   （例：sf1 接成 qf2/qf3 後，sf2 仍是預設的 qf3/qf4 → qf3 用兩次、qf1 沒人用）。
+   已公布的那邊為準，未公布的那邊改指向「剩下的兩場八強」。 */
+function reconcileSemis(){
+  const ALL = ["qf1","qf2","qf3","qf4"];
+  const qfOf = slot => {
+    if(!slot) return null;
+    if(slot.f) return slot.f;
+    if(slot.n){                       // 直接採用隊名時，反查是哪一場的勝隊
+      const t = NORM(slot.n);
+      return ALL.find(k => { const w = winner(k); return w && NORM(w.n) === t; }) || null;
+    }
+    return null;
+  };
+  const fixed = [];
+  ["sf1","sf2"].forEach(k=>{
+    if(DATA[k].guessed) return;
+    [qfOf(DATA[k].a), qfOf(DATA[k].b)].forEach(x=>{ if(x && !fixed.includes(x)) fixed.push(x); });
+  });
+  if(!fixed.length) return;           // 兩邊都未公布，維持預設骨架
+  const rest = ALL.filter(x => !fixed.includes(x));
+  ["sf1","sf2"].forEach(k=>{
+    if(DATA[k].guessed && rest.length >= 2){
+      DATA[k].a = {f:rest[0]}; DATA[k].b = {f:rest[1]};
+    }
   });
 }
 
