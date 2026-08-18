@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/18 15:11 JST",
+ "updated": "2026/08/18 15:21 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": [
   {
@@ -708,14 +708,14 @@
    "day": "第13日",
    "date": "8/18",
    "time": "13:00",
-   "status": "5回表",
+   "status": "5回裏",
    "teams": [
     "花巻東",
     "横浜"
    ],
    "score": [
     0,
-    4
+    5
    ]
   },
   {
