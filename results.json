@@ -1,5 +1,5 @@
 {
- "updated": "2026/08/20 09:23 JST",
+ "updated": "2026/08/20 12:13 JST",
  "source": "https://baseball.yahoo.co.jp/hsb_summer/schedule/competition",
  "games": [
   {
@@ -787,13 +787,13 @@
    "day": "第14日",
    "date": "8/20",
    "time": "8:00",
-   "status": "6回表",
+   "status": "試合終了",
    "teams": [
     "智弁和歌山",
     "横浜"
    ],
    "score": [
-    4,
+    7,
     1
    ]
   },
@@ -804,10 +804,14 @@
    "day": "第14日",
    "date": "8/20",
    "time": "10:30",
-   "status": "見どころ",
+   "status": "7回表",
    "teams": [
-    "天理",
-    "健大高崎"
+    "健大高崎",
+    "天理"
+   ],
+   "score": [
+    1,
+    0
    ]
   },
   {
